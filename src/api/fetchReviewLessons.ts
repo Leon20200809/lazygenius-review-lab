@@ -12,26 +12,9 @@
  */
 
 const REVIEW_LESSONS_API_URL =
-  "https://lazygenius.dev/wp-json/wp/v2/review_lessons?per_page=20&orderby=date&order=asc";
+  "https://lazygenius.dev/wp-json/wp/v2/review_lessons?per_page=30&orderby=date&order=asc";
 
-/**
- * WordPress REST API が返す review_lessons の生データ型
- *
- * MVPなので、まず使う項目だけ定義する。
- * 必要になったら featured_media / lesson_chapter / lesson_tag などを追加する。
- */
-export type WpReviewLesson = {
-  id: number;
-  date: string;
-  slug: string;
-  link: string;
-  title: {
-    rendered: string;
-  };
-  content: {
-    rendered: string;
-  };
-};
+import type { WpReviewLesson } from "../types/lesson";
 
 /**
  * 復習ノート記事一覧を取得する

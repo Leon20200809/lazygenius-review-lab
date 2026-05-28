@@ -1,0 +1,15 @@
+src/
+├─ assets/
+│  └─ images/
+│     └─ hero.png
+├─ components/
+│  ├─ LessonSidebar.tsx
+│  ├─ LessonContent.tsx
+│  └─ LessonItem.tsx
+├─ data/
+│  └─ mockLessons.ts
+├─ types/
+│  └─ lesson.ts
+├─ App.tsx
+├─ index.css
+└─ main.tsx

@@ -5,6 +5,7 @@ import { fetchReviewLessons } from "./api/fetchReviewLessons";
 import { normalizeReviewLessons } from "./utils/normalizeReviewLessons";
 import type { ReviewLesson } from "./types/lesson";
 import LessonSidebar from "./components/LessonSidebar";
+import LessonContent from "./components/LessonContent";
 
 export default function App() {
   const [lessons, setLessons] = useState<ReviewLesson[]>([]);
@@ -76,6 +77,7 @@ export default function App() {
             <div className="mt-4 max-h-[60vh] overflow-y-auto pr-1">
               <LessonSidebar
                 lessons={lessons}
+                selectedLessonId={selectedLesson?.id ?? null}
                 onSelectLesson={handleSelectLesson}
               />
             </div>
@@ -85,24 +87,17 @@ export default function App() {
           <div className="hidden lg:block lg:sticky lg:top-6 lg:self-start">
             <LessonSidebar
               lessons={lessons}
+              selectedLessonId={selectedLesson?.id ?? null}
               onSelectLesson={handleSelectLesson}
             />
           </div>
 
           {/* 右ペイン */}
-          <section className="min-h-[420px] rounded-2xl border border-slate-800 bg-slate-900/80 p-5 sm:p-6">
-            <p className="mb-3 text-xs font-bold tracking-[0.25em] text-amber-400 uppercase">
-              Selected Lesson
-            </p>
-
-            {selectedLesson ? (
-              <h2 className="text-xl font-bold leading-relaxed sm:text-2xl">
-                {selectedLesson.title}
-              </h2>
-            ) : (
-              <p className="text-slate-400">記事が選択されていません。</p>
-            )}
-          </section>
+          {selectedLesson ? (
+            <LessonContent selectedLesson={selectedLesson} />
+          ) : (
+            <p className="text-slate-400">記事が選択されていません。</p>
+          )}
         </div>
       </div>
     </main>

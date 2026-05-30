@@ -1,11 +1,19 @@
+import { useEffect } from "react";
 import type { ReviewLesson } from "../types/lesson";
+
+declare global {
+  interface Window {
+    Prism?: {
+      highlightAll: () => void;
+    };
+  }
+}
 
 type LessonContentProps = {
   selectedLesson: ReviewLesson | null;
 };
 
 export default function LessonContent({ selectedLesson }: LessonContentProps) {
-
   const contentClassName = [
     "max-w-none min-w-0 overflow-hidden space-y-5 leading-8 text-slate-200",
 
@@ -34,6 +42,16 @@ export default function LessonContent({ selectedLesson }: LessonContentProps) {
     "[&_td]:border [&_td]:border-slate-700 [&_td]:p-3",
     "[&_th]:border [&_th]:border-slate-700 [&_th]:bg-slate-800 [&_th]:p-3",
   ].join(" ");
+
+  useEffect(() => {
+    if (!selectedLesson) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      window.Prism?.highlightAll();
+    });
+  }, [selectedLesson?.id]);
 
   if (!selectedLesson) {
     return (

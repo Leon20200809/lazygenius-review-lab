@@ -1,4 +1,5 @@
 import type { ReviewLesson } from "../types/lesson";
+import { useEffect, useRef } from "react";
 
 type LessonSidebarProps = {
   lessons: ReviewLesson[];
@@ -6,7 +7,19 @@ type LessonSidebarProps = {
   onSelectLesson: (lesson: ReviewLesson) => void;
 };
 
-export default function LessonSidebar({ lessons, selectedLessonId, onSelectLesson }: LessonSidebarProps) {
+export default function LessonSidebar({
+  lessons,
+  selectedLessonId,
+  onSelectLesson,
+}: LessonSidebarProps) {
+  const selectedButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    selectedButtonRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }, [selectedLessonId]);
 
   return (
     <aside className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">

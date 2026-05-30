@@ -1,6 +1,6 @@
 // App.tsx
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchReviewLessons } from "./api/fetchReviewLessons";
 import { normalizeReviewLessons } from "./utils/normalizeReviewLessons";
 import type { ReviewLesson } from "./types/lesson";
@@ -12,6 +12,11 @@ export default function App() {
   const [selectedLesson, setSelectedLesson] = useState<ReviewLesson | null>(
     null,
   );
+
+  // 右ペインのスクロール位置を操作するための参照
+  const contentPanelRef = useRef<HTMLDivElement | null>(null);
+  // スマホの details を閉じるための参照
+  const mobileDetailsRef = useRef<HTMLDetailsElement | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -39,6 +44,15 @@ export default function App() {
 
   function handleSelectLesson(lesson: ReviewLesson) {
     setSelectedLesson(lesson);
+
+    mobileDetailsRef.current?.removeAttribute("open");
+
+    requestAnimationFrame(() => {
+      contentPanelRef.current?.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
   }
 
   if (isLoading) {
@@ -67,9 +81,9 @@ export default function App() {
           </p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
           {/* スマホ用：折りたたみ記事一覧 */}
-          <details className="lg:hidden">
+          <details className="lg:hidden" ref={mobileDetailsRef}>
             <summary className="cursor-pointer rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-sm font-bold tracking-[0.2em] text-amber-400 uppercase">
               記事一覧を開く
             </summary>
@@ -85,16 +99,25 @@ export default function App() {
 
           {/* PC用：左固定目次 */}
           <div className="hidden lg:block lg:sticky lg:top-6 lg:self-start">
-            <LessonSidebar
-              lessons={lessons}
-              selectedLessonId={selectedLesson?.id ?? null}
-              onSelectLesson={handleSelectLesson}
-            />
+            <div className="lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1 [direction:rtl]">
+              <div className="[direction:ltr]">
+                <LessonSidebar
+                  lessons={lessons}
+                  selectedLessonId={selectedLesson?.id ?? null}
+                  onSelectLesson={handleSelectLesson}
+                />
+              </div>
+            </div>
           </div>
 
           {/* 右ペイン */}
           {selectedLesson ? (
-            <LessonContent selectedLesson={selectedLesson} />
+            <div
+              ref={contentPanelRef}
+              className="min-w-0 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto"
+            >
+              <LessonContent selectedLesson={selectedLesson} />
+            </div>
           ) : (
             <p className="text-slate-400">記事が選択されていません。</p>
           )}
